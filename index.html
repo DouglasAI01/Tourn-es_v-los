@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiche Diagnostic — Tournée Cycles</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bleu: #007A9B;
+      --bleu-dark: #005f78;
+      --bleu-light: #e6f4f8;
+      --rose: #DB5061;
+      --rose-light: #fdf0f1;
+      --creme: #F5F0E0;
+      --creme-dark: #e8e2cf;
+      --noir: #1a1a2e;
+      --gris: #6b7280;
+      --gris-light: #f3f4f6;
+      --blanc: #ffffff;
+      --vert: #10b981;
+      --vert-light: #ecfdf5;
+      --orange: #f59e0b;
+      --orange-light: #fffbeb;
+      --rouge: #ef4444;
+      --rouge-light: #fef2f2;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--creme);
+      color: var(--noir);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--bleu);
+      color: white;
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,122,155,0.3);
+    }
+
+    .header-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .logo-text {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      opacity: 0.75;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .header-badge {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* SALARIÉ INFO BANNER */
+    .salarie-banner {
+      background: var(--bleu-dark);
+      color: white;
+    }
+
+    .salarie-banner-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .salarie-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--rose);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .salarie-info { flex: 1; }
+
+    .salarie-nom {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .salarie-details {
+      font-size: 12px;
+      opacity: 0.75;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+
+    .salarie-detail {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* MAIN */
+    main {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px 16px 100px;
+    }
+
+    /* COMMENTAIRE SALARIÉ */
+    .commentaire-card {
+      background: var(--orange-light);
+      border: 1.5px solid var(--orange);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .commentaire-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    .commentaire-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--orange);
+      margin-bottom: 3px;
+    }
+
+    .commentaire-text {
+      font-size: 14px;
+      color: var(--noir);
+      line-height: 1.5;
+    }
+
+    /* SECTION CARD */
+    .section-card {
+      background: white;
+      border-radius: 16px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border: 1.5px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .section-card.has-issue {
+      border-color: var(--rose);
+    }
+
+    .section-header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .section-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--bleu-light);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .section-status {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--vert-light);
+      color: var(--vert);
+    }
+
+    .section-status.regler { background: var(--orange-light); color: var(--orange); }
+    .section-status.reparer { background: var(--rouge-light); color: var(--rouge); }
+    .section-status.changer { background: var(--rose-light); color: var(--rose); }
+
+    .section-body {
+      padding: 0 16px 16px;
+    }
+
+    /* ÉTAT BUTTONS */
+    .etat-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .etat-btn {
+      padding: 10px 8px;
+      border: 2px solid var(--gris-light);
+      border-radius: 10px;
+      background: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gris);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .etat-btn:active { transform: scale(0.97); }
+
+    .etat-btn.selected.bon {
+      background: var(--vert-light);
+      border-color: var(--vert);
+      color: var(--vert);
+    }
+
+    .etat-btn.selected.regler {
+      background: var(--orange-light);
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+
+    .etat-btn.selected.reparer {
+      background: var(--rouge-light);
+      border-color: var(--rouge);
+      color: var(--rouge);
+    }
+
+    .etat-btn.selected.changer {
+      background: var(--rose-light);
+      border-color: var(--rose);
+      color: var(--rose);
+    }
+
+    /* REMARQUE */
+    .remarque-input {
+      width: 100%;
+      border: 1.5px solid var(--gris-light);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--noir);
+      resize: none;
+      min-height: 60px;
+      transition: border-color 0.2s;
+      background: var(--gris-light);
+    }
+
+    .remarque-input:focus {
+      outline: none;
+      border-color: var(--bleu);
+      background: white;
+    }
+
+    .remarque-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gris);
+      margin-bottom: 6px;
+    }
+
+    /* PIÈCES POSÉES */
+    .pieces-section {
+      background: white;
+      border-radius: 16px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .pieces-header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pieces-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .add-piece-btn {
+      background: var(--bleu);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .pieces-list {
+      padding: 0 16px 16px;
+    }
+
+    .piece-row {
+      display: grid;
+      grid-template-columns: 1fr 60px 80px 36px;
+      gap: 8px;
+      margin-bottom: 8px;
+      align-items: center;
+    }
+
+    .piece-input {
+      border: 1.5px solid var(--gris-light);
+      border-radius: 8px;
+      padding: 9px 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      background: var(--gris-light);
+      color: var(--noir);
+      width: 100%;
+    }
+
+    .piece-input:focus {
+      outline: none;
+      border-color: var(--bleu);
+      background: white;
+    }
+
+    .remove-piece-btn {
+      width: 36px;
+      height: 36px;
+      background: var(--rose-light);
+      border: none;
+      border-radius: 8px;
+      color: var(--rose);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pieces-header-labels {
+      display: grid;
+      grid-template-columns: 1fr 60px 80px 36px;
+      gap: 8px;
+      padding: 0 16px 8px;
+    }
+
+    .piece-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gris);
+    }
+
+    /* SORTIE */
+    .sortie-section {
+      background: white;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .sortie-header {
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sortie-body {
+      padding: 0 16px 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .sortie-btn {
+      padding: 16px;
+      border: 2px solid var(--gris-light);
+      border-radius: 12px;
+      background: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gris);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sortie-btn .sortie-icon { font-size: 24px; }
+    .sortie-btn .sortie-sub { font-size: 11px; font-weight: 400; opacity: 0.7; }
+
+    .sortie-btn:active { transform: scale(0.97); }
+
+    .sortie-btn.selected.facture {
+      background: var(--vert-light);
+      border-color: var(--vert);
+      color: var(--vert);
+    }
+
+    .sortie-btn.selected.devis {
+      background: var(--bleu-light);
+      border-color: var(--bleu);
+      color: var(--bleu);
+    }
+
+    /* MECANO */
+    .mecano-section {
+      background: white;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .mecano-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gris);
+      margin-bottom: 8px;
+    }
+
+    .mecano-input {
+      width: 100%;
+      border: 1.5px solid var(--gris-light);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--noir);
+      background: var(--gris-light);
+    }
+
+    .mecano-input:focus {
+      outline: none;
+      border-color: var(--bleu);
+      background: white;
+    }
+
+    /* SUBMIT */
+    .submit-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 1.5px solid var(--creme-dark);
+      padding: 12px 16px;
+      z-index: 100;
+    }
+
+    .submit-inner {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--bleu);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .submit-btn:active { transform: scale(0.98); background: var(--bleu-dark); }
+    .submit-btn:disabled { background: var(--gris); cursor: not-allowed; }
+
+    /* PROGRESS */
+    .progress-bar {
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+      height: 4px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: white;
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+
+    /* SUCCESS */
+    .success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,122,155,0.95);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      color: white;
+      text-align: center;
+      padding: 32px;
+    }
+
+    .success-overlay.visible { display: flex; }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+
+    .success-title { font-size: 24px; font-weight: 700; }
+    .success-sub { font-size: 15px; opacity: 0.8; max-width: 280px; line-height: 1.5; }
+
+    /* DIVIDER */
+    .section-divider {
+      height: 1.5px;
+      background: var(--gris-light);
+      margin: 0 16px 12px;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--rouge);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 300;
+      display: none;
+      white-space: nowrap;
+    }
+
+    .toast.visible { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">✅</div>
+  <div class="success-title">Fiche envoyée !</div>
+  <div class="success-sub" id="successMessage">La fiche de diagnostic a été transmise avec succès.</div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🚲</div>
+      <div>
+        <div class="logo-text">Tournée Cycles</div>
+        <div class="logo-sub">Fiche d'intervention</div>
+      </div>
+    </div>
+    <div class="header-badge" id="dateBadge">—</div>
+  </div>
+  <div class="progress-bar" style="margin: 0 20px 12px;">
+    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+  </div>
+  <div class="salarie-banner">
+    <div class="salarie-banner-inner">
+      <div class="salarie-avatar" id="salarieAvatar">?</div>
+      <div class="salarie-info">
+        <div class="salarie-nom" id="salarieNom">Chargement...</div>
+        <div class="salarie-details">
+          <span class="salarie-detail">🚲 <span id="salarieVelo">—</span></span>
+          <span class="salarie-detail">💬 <span id="salarieCommentaire">—</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- COMMENTAIRE SALARIÉ -->
+  <div class="commentaire-card" id="commentaireCard" style="display:none">
+    <div class="commentaire-icon">💬</div>
+    <div>
+      <div class="commentaire-label">Note du salarié</div>
+      <div class="commentaire-text" id="commentaireTexte"></div>
+    </div>
+  </div>
+
+  <!-- SECTIONS DIAGNOSTIC -->
+  <div id="sections"></div>
+
+  <!-- NOM DU MÉCANICIEN -->
+  <div class="mecano-section">
+    <div class="mecano-label">Mécanicien intervenant</div>
+    <input type="text" class="mecano-input" id="mecanoNom" placeholder="Votre nom complet" />
+  </div>
+
+  <!-- PIÈCES POSÉES -->
+  <div class="pieces-section">
+    <div class="pieces-header">
+      <div class="pieces-title">
+        <div class="section-icon">🔧</div>
+        Pièces posées
+      </div>
+      <button class="add-piece-btn" onclick="addPiece()">+ Ajouter</button>
+    </div>
+    <div class="pieces-header-labels">
+      <div class="piece-label">Désignation</div>
+      <div class="piece-label">Qté</div>
+      <div class="piece-label">Prix u. (€)</div>
+      <div></div>
+    </div>
+    <div class="pieces-list" id="piecesList">
+      <div style="text-align:center; color: var(--gris); font-size:13px; padding: 8px 0;">
+        Aucune pièce ajoutée
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPE DE SORTIE -->
+  <div class="sortie-section">
+    <div class="sortie-header">
+      <div class="section-icon">📄</div>
+      Document à générer
+    </div>
+    <div class="section-divider"></div>
+    <div class="sortie-body">
+      <button class="sortie-btn" id="btnFacture" onclick="selectSortie('facture')">
+        <span class="sortie-icon">🧾</span>
+        <span>Facture</span>
+        <span class="sortie-sub">Réparation effectuée</span>
+      </button>
+      <button class="sortie-btn" id="btnDevis" onclick="selectSortie('devis')">
+        <span class="sortie-icon">📋</span>
+        <span>Devis</span>
+        <span class="sortie-sub">Intervention atelier</span>
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<!-- SUBMIT BAR -->
+<div class="submit-bar">
+  <div class="submit-inner">
+    <button class="submit-btn" id="submitBtn" onclick="submitFiche()">
+      <span>Valider la fiche</span>
+      <span>→</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  // ─── CONFIG ───────────────────────────────────────────
+  const WEBHOOK_URL = 'VOTRE_WEBHOOK_N8N_ICI'; // À remplacer
+
+  // ─── SECTIONS ─────────────────────────────────────────
+  const SECTIONS = [
+    { id: 'roues_av', label: 'Roues avant', icon: '⚙️' },
+    { id: 'roues_ar', label: 'Roues arrière', icon: '⚙️' },
+    { id: 'freins', label: 'Freins', icon: '🛑' },
+    { id: 'transmission', label: 'Transmission', icon: '⛓️' },
+    { id: 'direction', label: 'Direction', icon: '🎯' },
+    { id: 'cadre', label: 'Cadre', icon: '🔩' },
+    { id: 'selle', label: 'Selle', icon: '🪑' },
+    { id: 'pedales', label: 'Pédales', icon: '🦶' },
+    { id: 'cablerie', label: 'Câblerie', icon: '〰️' },
+  ];
+
+  const ETATS = [
+    { value: 'bon', label: '✓ Bon', cls: 'bon' },
+    { value: 'à régler', label: '⚠ À régler', cls: 'regler' },
+    { value: 'à réparer', label: '🔧 À réparer', cls: 'reparer' },
+    { value: 'à changer', label: '↻ À changer', cls: 'changer' },
+  ];
+
+  // ─── STATE ────────────────────────────────────────────
+  let typeSortie = null;
+  let pieces = [];
+  let diagnostics = {};
+
+  // ─── URL PARAMS ───────────────────────────────────────
+  const params = new URLSearchParams(window.location.search);
+  const inscriptionId = params.get('inscription_id') || '';
+  const salarieNom = params.get('nom') || 'Salarié';
+  const salariePrenom = params.get('prenom') || '';
+  const typeVelo = params.get('velo') || '—';
+  const commentaire = params.get('commentaire') || '';
+  const sessionId = params.get('session_id') || '';
+
+  // ─── INIT ─────────────────────────────────────────────
+  window.onload = () => {
+    // Date
+    const today = new Date();
+    document.getElementById('dateBadge').textContent = today.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+
+    // Salarié
+    const fullName = `${salariePrenom} ${salarieNom}`.trim();
+    document.getElementById('salarieNom').textContent = fullName || 'Salarié inconnu';
+    document.getElementById('salarieAvatar').textContent = (salariePrenom[0] || salarieNom[0] || '?').toUpperCase();
+    document.getElementById('salarieVelo').textContent = typeVelo;
+    document.getElementById('salarieCommentaire').textContent = commentaire || 'Aucun commentaire';
+
+    // Commentaire card
+    if (commentaire) {
+      document.getElementById('commentaireCard').style.display = 'flex';
+      document.getElementById('commentaireTexte').textContent = commentaire;
+    }
+
+    // Sections
+    renderSections();
+    updateProgress();
+  };
+
+  // ─── RENDER SECTIONS ──────────────────────────────────
+  function renderSections() {
+    const container = document.getElementById('sections');
+    SECTIONS.forEach(section => {
+      diagnostics[section.id] = { etat: '', remarque: '' };
+      const card = document.createElement('div');
+      card.className = 'section-card';
+      card.id = `card-${section.id}`;
+      card.innerHTML = `
+        <div class="section-header" onclick="toggleSection('${section.id}')">
+          <div class="section-title">
+            <div class="section-icon">${section.icon}</div>
+            ${section.label}
+          </div>
+          <span class="section-status" id="status-${section.id}">—</span>
+        </div>
+        <div class="section-body" id="body-${section.id}" style="display:none">
+          <div class="section-divider" style="margin: 0 0 12px;"></div>
+          <div class="etat-group">
+            ${ETATS.map(e => `
+              <button class="etat-btn" id="btn-${section.id}-${e.value}" onclick="selectEtat('${section.id}', '${e.value}', '${e.cls}')">
+                ${e.label}
+              </button>
+            `).join('')}
+          </div>
+          <div class="remarque-label">Remarque</div>
+          <textarea class="remarque-input" id="remarque-${section.id}" placeholder="Détails de l'intervention..." oninput="updateRemarque('${section.id}', this.value)"></textarea>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function toggleSection(id) {
+    const body = document.getElementById(`body-${id}`);
+    body.style.display = body.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function selectEtat(sectionId, etat, cls) {
+    // Reset all buttons for this section
+    ETATS.forEach(e => {
+      const btn = document.getElementById(`btn-${sectionId}-${e.value}`);
+      btn.className = 'etat-btn';
+    });
+    // Select the chosen one
+    const btn = document.getElementById(`btn-${sectionId}-${etat}`);
+    btn.className = `etat-btn selected ${cls}`;
+    // Update state
+    diagnostics[sectionId].etat = etat;
+    // Update card status badge
+    const statusEl = document.getElementById(`status-${sectionId}`);
+    const statusMap = { 'bon': 'Bon', 'à régler': 'À régler', 'à réparer': 'À réparer', 'à changer': 'À changer' };
+    const clsMap = { 'bon': '', 'à régler': 'regler', 'à réparer': 'reparer', 'à changer': 'changer' };
+    statusEl.textContent = statusMap[etat];
+    statusEl.className = `section-status ${clsMap[etat]}`;
+    // Card border
+    const card = document.getElementById(`card-${sectionId}`);
+    card.classList.toggle('has-issue', etat !== 'bon');
+    updateProgress();
+  }
+
+  function updateRemarque(sectionId, value) {
+    diagnostics[sectionId].remarque = value;
+  }
+
+  // ─── PIÈCES ───────────────────────────────────────────
+  function addPiece() {
+    const list = document.getElementById('piecesList');
+    // Clear empty message
+    if (pieces.length === 0) list.innerHTML = '';
+    const idx = pieces.length;
+    pieces.push({ nom: '', quantite: '', prix: '' });
+    const row = document.createElement('div');
+    row.className = 'piece-row';
+    row.id = `piece-${idx}`;
+    row.innerHTML = `
+      <input type="text" class="piece-input" placeholder="Nom de la pièce" oninput="pieces[${idx}].nom=this.value" />
+      <input type="number" class="piece-input" placeholder="1" min="1" oninput="pieces[${idx}].quantite=this.value" />
+      <input type="number" class="piece-input" placeholder="0.00" step="0.01" oninput="pieces[${idx}].prix=this.value" />
+      <button class="remove-piece-btn" onclick="removePiece(${idx})">×</button>
+    `;
+    list.appendChild(row);
+  }
+
+  function removePiece(idx) {
+    const row = document.getElementById(`piece-${idx}`);
+    if (row) row.remove();
+    pieces[idx] = null;
+    if (pieces.filter(Boolean).length === 0) {
+      document.getElementById('piecesList').innerHTML = '<div style="text-align:center; color: var(--gris); font-size:13px; padding: 8px 0;">Aucune pièce ajoutée</div>';
+    }
+  }
+
+  // ─── SORTIE ───────────────────────────────────────────
+  function selectSortie(type) {
+    typeSortie = type;
+    document.getElementById('btnFacture').className = `sortie-btn${type === 'facture' ? ' selected facture' : ''}`;
+    document.getElementById('btnDevis').className = `sortie-btn${type === 'devis' ? ' selected devis' : ''}`;
+    updateProgress();
+  }
+
+  // ─── PROGRESS ─────────────────────────────────────────
+  function updateProgress() {
+    const total = SECTIONS.length + 1; // sections + sortie
+    const filled = SECTIONS.filter(s => diagnostics[s.id]?.etat).length + (typeSortie ? 1 : 0);
+    const pct = Math.round((filled / total) * 100);
+    document.getElementById('progressFill').style.width = `${pct}%`;
+  }
+
+  // ─── TOAST ────────────────────────────────────────────
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('visible');
+    setTimeout(() => t.classList.remove('visible'), 3000);
+  }
+
+  // ─── SUBMIT ───────────────────────────────────────────
+  async function submitFiche() {
+    // Validation
+    const mecano = document.getElementById('mecanoNom').value.trim();
+    if (!mecano) { showToast('Veuillez indiquer le nom du mécanicien'); return; }
+    if (!typeSortie) { showToast('Veuillez choisir : Facture ou Devis'); return; }
+
+    const missingSections = SECTIONS.filter(s => !diagnostics[s.id]?.etat);
+    if (missingSections.length > 0) {
+      showToast(`${missingSections.length} section(s) non renseignée(s)`);
+      return;
+    }
+
+    // Build payload
+    const payload = {
+      inscription_id: inscriptionId,
+      session_id: sessionId,
+      mecano_nom: mecano,
+      date_intervention: new Date().toISOString().split('T')[0],
+      type_sortie: typeSortie,
+      diagnostic_roues_av: diagnostics.roues_av,
+      diagnostic_roues_ar: diagnostics.roues_ar,
+      diagnostic_freins: diagnostics.freins,
+      diagnostic_transmission: diagnostics.transmission,
+      diagnostic_direction: diagnostics.direction,
+      diagnostic_cadre: diagnostics.cadre,
+      diagnostic_selle: diagnostics.selle,
+      diagnostic_pedales: diagnostics.pedales,
+      diagnostic_cablerie: diagnostics.cablerie,
+      pieces_posees: pieces.filter(Boolean).map(p => ({
+        nom: p.nom,
+        quantite: parseFloat(p.quantite) || 1,
+        prix_unitaire: parseFloat(p.prix) || 0
+      }))
+    };
+
+    // Submit
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span>Envoi en cours...</span>';
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        const typeDoc = typeSortie === 'facture' ? 'facture' : 'devis';
+        document.getElementById('successMessage').textContent = `Fiche transmise. Une ${typeDoc} sera générée automatiquement.`;
+        document.getElementById('successOverlay').classList.add('visible');
+      } else {
+        throw new Error('Erreur serveur');
+      }
+    } catch (e) {
+      btn.disabled = false;
+      btn.innerHTML = '<span>Valider la fiche</span><span>→</span>';
+      showToast('Erreur lors de l\'envoi. Réessayez.');
+    }
+  }
+</script>
+</body>
+</html>
