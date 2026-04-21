@@ -631,8 +631,7 @@
       const statusClass = estMien ? 'mien' : estPris ? 'pris' : 'libre';
       const avatarText = (inscription.salarie.prenom[0] || '') + (inscription.salarie.nom[0] || '');
 
-      const ficheUrl = `${FICHE_BASE_URL}?inscription_id=${inscription.id}&nom=${encodeURIComponent(inscription.salarie.nom)}&prenom=${encodeURIComponent(inscription.salarie.prenom)}&velo=${encodeURIComponent(inscription.type_velo)}&commentaire=${encodeURIComponent(inscription.commentaire_salarie || '')}&session_id=${sessionId}`;
-
+const ficheUrl = `${FICHE_BASE_URL}?inscription_id=${inscription.id}&nom=${encodeURIComponent(inscription.salarie.nom)}&prenom=${encodeURIComponent(inscription.salarie.prenom)}&velo=${encodeURIComponent(inscription.type_velo)}&commentaire=${encodeURIComponent(inscription.commentaire_salarie || '')}&session_id=${sessionId}&mecano=${encodeURIComponent(mecanoNom)}`;
       let actionHTML = '';
       if (estMien) {
         actionHTML = `<a href="${ficheUrl}" class="btn-ouvrir">📋 Ouvrir</a>`;
