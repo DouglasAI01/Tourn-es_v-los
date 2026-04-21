@@ -749,7 +749,11 @@
 
 <script>
   // ─── CONFIG ───────────────────────────────────────────
-const WEBHOOK_URL = 'https://meekly-tabulable-merrill.ngrok-free.dev/webhook-test/6c72ae1e-f7b1-419a-a134-6917bb7f30e3';
+  const WEBHOOK_URL = 'https://meekly-tabulable-merrill.ngrok-free.dev/webhook-test/6c72ae1e-f7b1-419a-a134-6917bb7f30e3';
+  const SUPABASE_URL = 'https://pydbuxbkiguowjqwhnuw.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZGJ1eGJraWd1b3dqcXdobnV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NTI1MDgsImV4cCI6MjA5MjIyODUwOH0.ZTb1LIxI0gbFpM9lSclsxSeN5_k_gYUlVtAwZ1itEBk';
+  let cataloguePieces = [];
+
   // ─── SECTIONS ─────────────────────────────────────────
   const SECTIONS = [
     { id: 'roues_av', label: 'Roues avant', icon: '⚙️' },
@@ -786,7 +790,23 @@ const WEBHOOK_URL = 'https://meekly-tabulable-merrill.ngrok-free.dev/webhook-tes
   const sessionId = params.get('session_id') || '';
 
   // ─── INIT ─────────────────────────────────────────────
-  window.onload = () => {
+  // ─── CHARGE CATALOGUE PIÈCES ─────────────────────────
+  async function chargerCatalogue() {
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/pieces?select=id,nom,prix_unitaire,section,type_velo&order=section,nom', {
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+        }
+      });
+      cataloguePieces = await res.json();
+    } catch(e) {
+      console.error('Erreur chargement catalogue:', e);
+    }
+  }
+
+  window.onload = async () => {
+    await chargerCatalogue();
     if (mecanoParam) document.getElementById('mecanoNom').value = mecanoParam;
     // Date
     const today = new Date();
@@ -876,22 +896,55 @@ const WEBHOOK_URL = 'https://meekly-tabulable-merrill.ngrok-free.dev/webhook-tes
   }
 
   // ─── PIÈCES ───────────────────────────────────────────
-  function addPiece() {
+  function addPiece(nomPrefill, prixPrefill) {
+    nomPrefill = nomPrefill || '';
+    prixPrefill = prixPrefill || '';
     const list = document.getElementById('piecesList');
-    // Clear empty message
     if (pieces.length === 0) list.innerHTML = '';
     const idx = pieces.length;
-    pieces.push({ nom: '', quantite: '', prix: '' });
+    pieces.push({ nom: nomPrefill, quantite: 1, prix: prixPrefill });
+
+    // Filtre le catalogue selon le type de vélo
+    const typeVeloActuel = typeVelo.toLowerCase();
+    const piecesFiltered = cataloguePieces.filter(function(p) {
+      return p.type_velo === 'tous' || p.type_velo.toLowerCase() === typeVeloActuel;
+    });
+
+    let optionsHTML = '<option value="">-- Choisir une pièce --</option>';
+    piecesFiltered.forEach(function(p) {
+      const sel = nomPrefill === p.nom ? 'selected' : '';
+      optionsHTML += '<option value="' + p.nom + '" data-prix="' + p.prix_unitaire + '" ' + sel + '>' + p.nom + ' — ' + p.prix_unitaire + '€</option>';
+    });
+    optionsHTML += '<option value="__autre__">Autre (saisie libre)</option>';
+
     const row = document.createElement('div');
     row.className = 'piece-row';
-    row.id = `piece-${idx}`;
-    row.innerHTML = `
-      <input type="text" class="piece-input" placeholder="Nom de la pièce" oninput="pieces[${idx}].nom=this.value" />
-      <input type="number" class="piece-input" placeholder="1" min="1" oninput="pieces[${idx}].quantite=this.value" />
-      <input type="number" class="piece-input" placeholder="0.00" step="0.01" oninput="pieces[${idx}].prix=this.value" />
-      <button class="remove-piece-btn" onclick="removePiece(${idx})">×</button>
-    `;
+    row.id = 'piece-' + idx;
+    row.innerHTML = '<select class="piece-input" onchange="selectPiece(' + idx + ', this)">' + optionsHTML + '</select>'
+      + '<input type="number" class="piece-input" placeholder="1" min="1" value="1" oninput="pieces[' + idx + '].quantite=this.value" />'
+      + '<input type="number" class="piece-input piece-prix" placeholder="0.00" step="0.01" value="' + prixPrefill + '" oninput="pieces[' + idx + '].prix=this.value" />'
+      + '<button class="remove-piece-btn" onclick="removePiece(' + idx + ')">×</button>';
     list.appendChild(row);
+  }
+
+  function selectPiece(idx, selectEl) {
+    var selected = selectEl.options[selectEl.selectedIndex];
+    if (selected.value === '__autre__') {
+      var nomInput = document.createElement('input');
+      nomInput.type = 'text';
+      nomInput.className = 'piece-input';
+      nomInput.placeholder = 'Nom de la pièce';
+      nomInput.addEventListener('input', function() { pieces[idx].nom = nomInput.value; });
+      selectEl.replaceWith(nomInput);
+      pieces[idx].nom = '';
+    } else {
+      pieces[idx].nom = selected.value;
+      var prix = parseFloat(selected.dataset.prix) || 0;
+      pieces[idx].prix = prix;
+      var row = document.getElementById('piece-' + idx);
+      var prixInput = row.querySelector('.piece-prix');
+      if (prixInput) prixInput.value = prix;
+    }
   }
 
   function removePiece(idx) {
