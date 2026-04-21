@@ -778,6 +778,7 @@
 
   // ─── URL PARAMS ───────────────────────────────────────
   const params = new URLSearchParams(window.location.search);
+  const mecanoParam = params.get('mecano') || '';
   const inscriptionId = params.get('inscription_id') || '';
   const salarieNom = params.get('nom') || 'Salarié';
   const salariePrenom = params.get('prenom') || '';
@@ -787,6 +788,7 @@
 
   // ─── INIT ─────────────────────────────────────────────
   window.onload = () => {
+    if (mecanoParam) document.getElementById('mecanoNom').value = mecanoParam;
     // Date
     const today = new Date();
     document.getElementById('dateBadge').textContent = today.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
