@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session du jour — Tournée Cycles</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bleu: #007A9B;
+      --bleu-dark: #005f78;
+      --bleu-light: #e6f4f8;
+      --rose: #DB5061;
+      --rose-light: #fdf0f1;
+      --creme: #F5F0E0;
+      --creme-dark: #e8e2cf;
+      --noir: #1a1a2e;
+      --gris: #6b7280;
+      --gris-light: #f3f4f6;
+      --blanc: #ffffff;
+      --vert: #10b981;
+      --vert-light: #ecfdf5;
+      --orange: #f59e0b;
+      --orange-light: #fffbeb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--creme);
+      color: var(--noir);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--bleu);
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,122,155,0.3);
+    }
+
+    .header-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .logo-text { font-size: 15px; font-weight: 700; line-height: 1.2; }
+    .logo-sub { font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .header-right { text-align: right; }
+
+    .header-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .header-count {
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* SESSION BANNER */
+    .session-banner {
+      background: var(--bleu-dark);
+      padding: 12px 20px;
+    }
+
+    .session-banner-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .session-info { flex: 1; }
+
+    .session-entreprise {
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .session-site {
+      color: rgba(255,255,255,0.7);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .session-badge {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: white;
+      font-weight: 500;
+    }
+
+    /* MECANO INPUT */
+    .mecano-bar {
+      background: white;
+      border-bottom: 1.5px solid var(--creme-dark);
+      padding: 12px 20px;
+      position: sticky;
+      top: 84px;
+      z-index: 90;
+    }
+
+    .mecano-bar-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mecano-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gris);
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mecano-input {
+      flex: 1;
+      border: 1.5px solid var(--creme-dark);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--noir);
+      background: var(--gris-light);
+    }
+
+    .mecano-input:focus {
+      outline: none;
+      border-color: var(--bleu);
+      background: white;
+    }
+
+    /* MAIN */
+    main {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    /* STATS */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .stat-number {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-number.total { color: var(--bleu); }
+    .stat-number.libre { color: var(--vert); }
+    .stat-number.pris { color: var(--rose); }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--gris);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    /* SECTION TITRE */
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gris);
+      margin-bottom: 10px;
+      padding-left: 4px;
+    }
+
+    /* VÉLO CARD */
+    .velo-card {
+      background: white;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border: 1.5px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .velo-card.libre { border-color: transparent; }
+    .velo-card.pris { border-color: var(--rose); opacity: 0.75; }
+    .velo-card.mien { border-color: var(--vert); }
+
+    .velo-card-inner {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .velo-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    .velo-avatar.libre { background: var(--bleu-light); color: var(--bleu); }
+    .velo-avatar.pris { background: var(--rose-light); color: var(--rose); }
+    .velo-avatar.mien { background: var(--vert-light); color: var(--vert); }
+
+    .velo-info { flex: 1; min-width: 0; }
+
+    .velo-nom {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--noir);
+    }
+
+    .velo-details {
+      display: flex;
+      gap: 8px;
+      margin-top: 3px;
+      flex-wrap: wrap;
+    }
+
+    .velo-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: var(--gris-light);
+      color: var(--gris);
+    }
+
+    .velo-tag.vae { background: var(--bleu-light); color: var(--bleu); }
+    .velo-tag.musculaire { background: var(--creme-dark); color: #5a4f3a; }
+    .velo-tag.cargo { background: var(--orange-light); color: var(--orange); }
+
+    .velo-commentaire {
+      font-size: 12px;
+      color: var(--gris);
+      margin-top: 4px;
+      font-style: italic;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .velo-action { flex-shrink: 0; }
+
+    .btn-prendre {
+      background: var(--bleu);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-prendre:hover { background: var(--bleu-dark); }
+    .btn-prendre:active { transform: scale(0.96); }
+
+    .btn-ouvrir {
+      background: var(--vert);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .pris-par {
+      font-size: 12px;
+      color: var(--rose);
+      font-weight: 600;
+      padding: 6px 12px;
+      background: var(--rose-light);
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    /* EXPIRED */
+    .expired-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26,26,46,0.95);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      color: white;
+      text-align: center;
+      padding: 32px;
+    }
+
+    .expired-overlay.visible { display: flex; }
+    .expired-icon { font-size: 48px; }
+    .expired-title { font-size: 22px; font-weight: 700; }
+    .expired-sub { font-size: 14px; opacity: 0.7; max-width: 260px; line-height: 1.5; }
+
+    /* LOADING */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gris);
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--creme-dark);
+      border-top-color: var(--bleu);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--noir);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 300;
+      display: none;
+      white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+
+    .toast.visible { display: block; animation: slideUp 0.3s ease; }
+
+    @keyframes slideUp {
+      from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+
+    /* EMPTY */
+    .empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gris);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="expired-overlay" id="expiredOverlay">
+  <div class="expired-icon">⏰</div>
+  <div class="expired-title">Session expirée</div>
+  <div class="expired-sub">Ce lien n'est valable que le jour de l'intervention. Contactez Alexandre pour toute question.</div>
+</div>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🚲</div>
+      <div>
+        <div class="logo-text">Tournée Cycles</div>
+        <div class="logo-sub">Session du jour</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="header-date" id="headerDate">—</div>
+      <div class="header-count" id="headerCount">Chargement...</div>
+    </div>
+  </div>
+  <div class="session-banner">
+    <div class="session-banner-inner">
+      <div class="session-info">
+        <div class="session-entreprise" id="sessionEntreprise">—</div>
+        <div class="session-site" id="sessionSite">—</div>
+      </div>
+      <div class="session-badge" id="sessionBadge">— vélos</div>
+    </div>
+  </div>
+</header>
+
+<div class="mecano-bar">
+  <div class="mecano-bar-inner">
+    <div class="mecano-label">Je suis :</div>
+    <input type="text" class="mecano-input" id="mecanoNom" placeholder="Votre nom complet" />
+  </div>
+</div>
+
+<main>
+  <div id="loadingState" class="loading">
+    <div class="spinner"></div>
+    <div>Chargement des vélos...</div>
+  </div>
+  <div id="content" style="display:none">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-number total" id="statTotal">0</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number libre" id="statLibre">0</div>
+        <div class="stat-label">Disponibles</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number pris" id="statPris">0</div>
+        <div class="stat-label">Pris en charge</div>
+      </div>
+    </div>
+
+    <div class="section-title">Vélos à traiter</div>
+    <div id="velosList"></div>
+  </div>
+</main>
+
+<script>
+  // ─── CONFIG ───────────────────────────────────────────
+  const SUPABASE_URL = 'https://pydbuxbkiguowjqwhnuw.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5ZGJ1eGJraWd1b3dqcXdobnV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NTI1MDgsImV4cCI6MjA5MjIyODUwOH0.ZTb1LIxI0gbFpM9lSclsxSeN5_k_gYUlVtAwZ1itEBk';
+  const FICHE_BASE_URL = 'https://douglasai01.github.io/Tourn-es_v-los/';
+  const POLL_INTERVAL = 15000; // Refresh toutes les 15 secondes
+
+  // ─── STATE ────────────────────────────────────────────
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+  let inscriptions = [];
+  let sessionData = null;
+  let pollTimer = null;
+
+  // ─── INIT ─────────────────────────────────────────────
+  window.onload = async () => {
+    if (!sessionId) {
+      showExpired();
+      return;
+    }
+
+    // Date header
+    const today = new Date();
+    document.getElementById('headerDate').textContent = today.toLocaleDateString('fr-FR', {
+      weekday: 'long', day: '2-digit', month: 'long'
+    });
+
+    await loadSession();
+    startPolling();
+  };
+
+  // ─── API HELPERS ──────────────────────────────────────
+  async function supabaseGet(endpoint) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+      }
+    });
+    if (!res.ok) throw new Error(`Erreur API: ${res.status}`);
+    return res.json();
+  }
+
+  async function supabasePatch(table, id, data) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error(`Erreur PATCH: ${res.status}`);
+    return res.json();
+  }
+
+  // ─── LOAD SESSION ─────────────────────────────────────
+  async function loadSession() {
+    try {
+      // Récupère la session
+      const sessions = await supabaseGet(
+        `sessions?id=eq.${sessionId}&select=id,date_confirmee,entreprise_id,site_id`
+      );
+
+      if (!sessions.length) { showExpired(); return; }
+      sessionData = sessions[0];
+
+      // Vérifie expiration : la session expire à minuit du jour J
+      const sessionDate = new Date(sessionData.date_confirmee);
+      sessionDate.setHours(23, 59, 59, 999);
+      const now = new Date();
+      if (now > sessionDate) {
+        showExpired();
+        return;
+      }
+
+      // Récupère entreprise + site en parallèle
+      const [entreprises, sites] = await Promise.all([
+        supabaseGet(`entreprises?id=eq.${sessionData.entreprise_id}&select=nom`),
+        supabaseGet(`sites?id=eq.${sessionData.site_id}&select=nom,adresse,ville`)
+      ]);
+
+      const entreprise = entreprises[0];
+      const site = sites[0];
+
+      document.getElementById('sessionEntreprise').textContent = entreprise?.nom || '—';
+      document.getElementById('sessionSite').textContent = site ? `${site.nom} — ${site.adresse}, ${site.ville}` : '—';
+
+      await loadInscriptions();
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+
+    } catch (e) {
+      console.error(e);
+      showToast('Erreur de chargement. Vérifiez votre connexion.');
+    }
+  }
+
+  // ─── LOAD INSCRIPTIONS ────────────────────────────────
+  async function loadInscriptions() {
+    const data = await supabaseGet(
+      `inscriptions?session_id=eq.${sessionId}&select=id,type_velo,commentaire_salarie,mecano_assigne,salarie_id`
+    );
+
+    // Récupère les salariés en parallèle
+    const salarieIds = data.map(i => i.salarie_id);
+    const salaries = await supabaseGet(
+      `salaries?id=in.(${salarieIds.join(',')})&select=id,nom,prenom`
+    );
+
+    const salarieMap = {};
+    salaries.forEach(s => salarieMap[s.id] = s);
+
+    inscriptions = data.map(i => ({
+      ...i,
+      salarie: salarieMap[i.salarie_id] || { nom: '?', prenom: '?' }
+    }));
+
+    renderInscriptions();
+  }
+
+  // ─── RENDER ───────────────────────────────────────────
+  function renderInscriptions() {
+    const mecanoNom = document.getElementById('mecanoNom').value.trim();
+    const total = inscriptions.length;
+    const pris = inscriptions.filter(i => i.mecano_assigne).length;
+    const libre = total - pris;
+
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statLibre').textContent = libre;
+    document.getElementById('statPris').textContent = pris;
+    document.getElementById('sessionBadge').textContent = `${total} vélos`;
+    document.getElementById('headerCount').textContent = `${libre} disponible${libre > 1 ? 's' : ''}`;
+
+    const list = document.getElementById('velosList');
+    list.innerHTML = '';
+
+    if (!inscriptions.length) {
+      list.innerHTML = '<div class="empty">Aucune inscription pour cette session.</div>';
+      return;
+    }
+
+    inscriptions.forEach(inscription => {
+      const estMien = mecanoNom && inscription.mecano_assigne === mecanoNom;
+      const estPris = !!inscription.mecano_assigne && !estMien;
+      const estLibre = !inscription.mecano_assigne;
+
+      const statusClass = estMien ? 'mien' : estPris ? 'pris' : 'libre';
+      const avatarText = (inscription.salarie.prenom[0] || '') + (inscription.salarie.nom[0] || '');
+
+      const ficheUrl = `${FICHE_BASE_URL}?inscription_id=${inscription.id}&nom=${encodeURIComponent(inscription.salarie.nom)}&prenom=${encodeURIComponent(inscription.salarie.prenom)}&velo=${encodeURIComponent(inscription.type_velo)}&commentaire=${encodeURIComponent(inscription.commentaire_salarie || '')}&session_id=${sessionId}`;
+
+      let actionHTML = '';
+      if (estMien) {
+        actionHTML = `<a href="${ficheUrl}" class="btn-ouvrir">📋 Ouvrir</a>`;
+      } else if (estPris) {
+        actionHTML = `<div class="pris-par">✓ ${inscription.mecano_assigne}</div>`;
+      } else {
+        actionHTML = `<button class="btn-prendre" onclick="prendreVelo('${inscription.id}')">Je prends</button>`;
+      }
+
+      const card = document.createElement('div');
+      card.className = `velo-card ${statusClass}`;
+      card.id = `velo-${inscription.id}`;
+      card.innerHTML = `
+        <div class="velo-card-inner">
+          <div class="velo-avatar ${statusClass}">${avatarText}</div>
+          <div class="velo-info">
+            <div class="velo-nom">${inscription.salarie.prenom} ${inscription.salarie.nom}</div>
+            <div class="velo-details">
+              <span class="velo-tag ${inscription.type_velo.toLowerCase()}">${inscription.type_velo}</span>
+            </div>
+            ${inscription.commentaire_salarie ? `<div class="velo-commentaire">💬 ${inscription.commentaire_salarie}</div>` : ''}
+          </div>
+          <div class="velo-action">${actionHTML}</div>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  // ─── PRENDRE UN VÉLO ──────────────────────────────────
+  async function prendreVelo(inscriptionId) {
+    const mecanoNom = document.getElementById('mecanoNom').value.trim();
+    if (!mecanoNom) {
+      showToast('Entrez votre nom avant de prendre un vélo');
+      document.getElementById('mecanoNom').focus();
+      return;
+    }
+
+    try {
+      await supabasePatch('inscriptions', inscriptionId, {
+        mecano_assigne: mecanoNom
+      });
+
+      // Met à jour localement
+      const insc = inscriptions.find(i => i.id === inscriptionId);
+      if (insc) insc.mecano_assigne = mecanoNom;
+      renderInscriptions();
+      showToast(`✅ Vélo de ${insc?.salarie?.prenom} assigné à ${mecanoNom}`);
+    } catch (e) {
+      showToast('Erreur lors de l\'assignation. Réessayez.');
+    }
+  }
+
+  // ─── POLLING ──────────────────────────────────────────
+  function startPolling() {
+    pollTimer = setInterval(async () => {
+      try {
+        await loadInscriptions();
+      } catch (e) {
+        console.error('Erreur polling:', e);
+      }
+    }, POLL_INTERVAL);
+  }
+
+  // ─── HELPERS ──────────────────────────────────────────
+  function showExpired() {
+    document.getElementById('expiredOverlay').classList.add('visible');
+    if (pollTimer) clearInterval(pollTimer);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('visible');
+    setTimeout(() => t.classList.remove('visible'), 3000);
+  }
+
+  // Re-render quand le mécano tape son nom
+  document.getElementById('mecanoNom').addEventListener('input', () => {
+    if (inscriptions.length) renderInscriptions();
+  });
+</script>
+</body>
+</html>
