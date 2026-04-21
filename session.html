@@ -554,14 +554,8 @@
       if (!sessions.length) { showExpired(); return; }
       sessionData = sessions[0];
 
-      // Vérifie expiration : la session expire à minuit du jour J
-      const sessionDate = new Date(sessionData.date_confirmee);
-      sessionDate.setHours(23, 59, 59, 999);
-      const now = new Date();
-      if (now > sessionDate) {
-        showExpired();
-        return;
-      }
+      // Pas de vérification d'expiration en POC
+// La session est toujours accessible
 
       // Récupère entreprise + site en parallèle
       const [entreprises, sites] = await Promise.all([
